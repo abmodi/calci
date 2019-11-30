@@ -16,6 +16,6 @@ public class Calculator {
     System.out.println("Token Stream: " + tokenStream);
     CalciBaseParser parser = new CalciBaseParser(tokenStream);
     CalciVisitor visitor = new CalciVisitor();
-    System.out.println("Result is: " + visitor.visitExpr(parser.expr()));
+    System.out.println("Result is: " + visitor.visitStart(parser.start()));
   }
 }

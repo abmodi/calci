@@ -8,6 +8,12 @@ SUB: '-';
 MUL: '*';
 DIV: '/';
 
+start: expr;
 
-expr: NUMBER operation NUMBER;
+
+expr  : left=expr op=('*'|'/') right=expr #opExpr
+      | left=expr op=('+'|'-') right=expr #opExpr
+      | '(' expr ')'                      #parenExpr
+      | atom=NUMBER                       #atomExpr
+      ;
 operation: (ADD | SUB | MUL | DIV);

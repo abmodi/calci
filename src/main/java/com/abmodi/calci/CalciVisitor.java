@@ -2,34 +2,42 @@ package com.abmodi.calci;
 
 import com.abmodi.calci.parser.CalciBaseBaseVisitor;
 import com.abmodi.calci.parser.CalciBaseParser;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.List;
-
-public class CalciVisitor extends CalciBaseBaseVisitor {
+public class CalciVisitor extends CalciBaseBaseVisitor<Integer> {
   @Override
-  public Integer visitExpr(CalciBaseParser.ExprContext ctx) {
-    List<TerminalNode> nodes = ctx.NUMBER();
-    int num1 = Integer.parseInt(nodes.get(0).toString());
-    int num2 = Integer.parseInt(nodes.get(1).toString());
-    String operator = ctx.operation().getText();
-    System.out.println("Operator: " + operator);
-    char oper = operator.charAt(0);
-    switch (oper) {
-    case '+':
-      return num1 + num2;
-    case '-':
-      return num1 - num2;
-    case '*':
-      return num1 * num2;
-    case '/':
-      return num1 / num2;
-    }
-    return 5;
+  public Integer visitStart(CalciBaseParser.StartContext ctx) {
+    return this.visit(ctx.expr());
   }
 
   @Override
-  public Object visitOperation(CalciBaseParser.OperationContext ctx) {
+  public Integer visitOpExpr(CalciBaseParser.OpExprContext ctx) {
+    int left = visit(ctx.left);
+    int right = visit(ctx.right);
+
+    String op = ctx.op.getText();
+    switch (op.charAt(0)) {
+      case '*': return left * right;
+      case '/': return left / right;
+      case '+': return left + right;
+      case '-': return left - right;
+      default: throw new IllegalArgumentException("Unknown operator " + op);
+    }
+  }
+
+  @Override
+  public Integer visitAtomExpr(CalciBaseParser.AtomExprContext ctx) {
+    return Integer.parseInt(ctx.atom.getText());
+  }
+
+  @Override
+  public Integer visitParenExpr(
+      CalciBaseParser.ParenExprContext ctx) {
+    return this.visit(ctx.expr());
+  }
+
+  @Override
+  public Integer visitOperation(
+      CalciBaseParser.OperationContext ctx) {
     return super.visitOperation(ctx);
   }
 }
