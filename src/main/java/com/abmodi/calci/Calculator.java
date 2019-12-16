@@ -10,12 +10,12 @@ public class Calculator {
 
     System.out.println("Evaluating " + args[0]);
 
-    ANTLRInputStream inputStream = new ANTLRInputStream(args[0]);
-    CalciBaseLexer lexer = new CalciBaseLexer(inputStream);
+    ANTLRInputStream inputStream = new ANTLRInputStream("3 + 5*(16 + 12)/7 - 4");
+    CalcBaseLexer lexer = new CalcBaseLexer(inputStream);
     CommonTokenStream tokenStream = new CommonTokenStream(lexer);
     System.out.println("Token Stream: " + tokenStream);
-    CalciBaseParser parser = new CalciBaseParser(tokenStream);
+    CalcBaseParser parser = new CalcBaseParser(tokenStream);
     CalciVisitor visitor = new CalciVisitor();
-    System.out.println("Result is: " + visitor.visitStart(parser.start()));
+    System.out.println("Result is: " + visitor.visitStart(parser.start()).eval());
   }
 }

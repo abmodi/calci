@@ -1,4 +1,4 @@
-grammar CalciBase;
+grammar CalcBase;
 
 
 WS: [ \t\n]+ -> skip ;

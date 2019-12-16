@@ -1,43 +1,43 @@
 package com.abmodi.calci;
 
-import com.abmodi.calci.parser.CalciBaseBaseVisitor;
-import com.abmodi.calci.parser.CalciBaseParser;
+import com.abmodi.calci.parser.CalcBaseBaseVisitor;
+import com.abmodi.calci.parser.CalcBaseParser;
 
-public class CalciVisitor extends CalciBaseBaseVisitor<Integer> {
+public class CalciVisitor extends CalcBaseBaseVisitor<Expression> {
   @Override
-  public Integer visitStart(CalciBaseParser.StartContext ctx) {
+  public Expression visitStart(CalcBaseParser.StartContext ctx) {
     return this.visit(ctx.expr());
   }
 
   @Override
-  public Integer visitOpExpr(CalciBaseParser.OpExprContext ctx) {
-    int left = visit(ctx.left);
-    int right = visit(ctx.right);
+  public Expression visitOpExpr(CalcBaseParser.OpExprContext ctx) {
+    Expression left = visit(ctx.left);
+    Expression right = visit(ctx.right);
 
     String op = ctx.op.getText();
     switch (op.charAt(0)) {
-      case '*': return left * right;
-      case '/': return left / right;
-      case '+': return left + right;
-      case '-': return left - right;
+      case '*': return new MulExpression(left, right);
+      case '/': return new DivExpression(left, right);
+      case '+': return new AddExpression(left, right);
+      case '-': return new SubExpression(left, right);
       default: throw new IllegalArgumentException("Unknown operator " + op);
     }
   }
 
   @Override
-  public Integer visitAtomExpr(CalciBaseParser.AtomExprContext ctx) {
-    return Integer.parseInt(ctx.atom.getText());
+  public Expression visitAtomExpr(CalcBaseParser.AtomExprContext ctx) {
+    return new AtomExpression(ctx.getText());
   }
 
   @Override
-  public Integer visitParenExpr(
-      CalciBaseParser.ParenExprContext ctx) {
+  public Expression visitParenExpr(
+      CalcBaseParser.ParenExprContext ctx) {
     return this.visit(ctx.expr());
   }
 
   @Override
-  public Integer visitOperation(
-      CalciBaseParser.OperationContext ctx) {
+  public Expression visitOperation(
+      CalcBaseParser.OperationContext ctx) {
     return super.visitOperation(ctx);
   }
 }
